@@ -1,0 +1,16 @@
+{
+	"name": "ng-ScrollSpy.js",
+	"version": "1.0.0",
+	"main": [
+		"ng-ScrollSpy.js"
+	],
+	"keywords": [
+		"angular",
+		"javascript",
+		"scrollspy"
+	],
+	"ignore": [
+		"**/.*",
+		"styles"
+	]
+}
