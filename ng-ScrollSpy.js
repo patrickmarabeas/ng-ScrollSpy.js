@@ -1,4 +1,4 @@
-/* ng-ScrollSpy.js v1.0.0
+/* ng-ScrollSpy.js v1.1.0
  * https://github.com/patrickmarabeas/ng-ScrollSpy.js
  *
  * Copyright 2013, Patrick Marabeas http://pulse-dev.com
@@ -19,8 +19,7 @@ module.service( 'spyService', function() {
 	};
 });
 
-
-module.directive ( 'scrollspy', [ '$window', 'spyService', function( $window, spyService ) {
+module.directive ( 'scrollspy', [ '$rootScope', '$interval', '$window', '$document', 'spyService', function( $rootScope, $interval, $window, $document, spyService ) {
 	return {
 		restrict: 'A',
 		controller: [ '$scope', function( $scope ) {
@@ -60,14 +59,16 @@ module.directive ( 'scrollspy', [ '$window', 'spyService', function( $window, sp
 					else {
 						spy.trigger = 'max';
 					}
+
+
 				}
 			};
 
 			var determiner = function() {
 
 				var current = null;
-				var scrollTop = $window.scrollY;
-				var scrollBottom = $window.scrollY + scrollSpyVisibleHeight();
+				var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+				var scrollBottom = ((window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop) + scrollSpyVisibleHeight();
 
 				for ( var i = 0; i < spyService.spies.length; i++ ) {
 					var spy = spyService.spies[i];
@@ -83,6 +84,7 @@ module.directive ( 'scrollspy', [ '$window', 'spyService', function( $window, sp
 
 				scope.$apply( function () {
 					scope.activeSpy = current;
+
 				});
 
 			};
@@ -109,10 +111,47 @@ module.directive ( 'scrollspy', [ '$window', 'spyService', function( $window, sp
 				determiner();
 			});
 
+//			$rootScope.$watch(function() {
+//
+//			});
+//
+//			$interval(function() {
+//
+//			}, 2000);
+
+
+			for ( var i = 0; i < spyService.spies.length; i++ ) {
+
+				var spy = spyService.spies[i].scope.spy;
+
+//				angular.element( document.querySelector( '#' + spy ) ).bind( 'DOMSubtreeModified', function( e ) {
+//					console.warn("change!", e);
+//
+//					angular.element( document ).ready( function() {
+//						setup();
+//						determiner();
+//					});
+//
+//				});
+
+				var target = document.getElementById(spy);
+				var config = { attributes: true, childList: true, characterData: true };
+				var observer = new MutationObserver(function(mutations) {
+					mutations.forEach(function(mutation) {
+						console.warn("change!");
+						setup();
+						determiner();
+
+					});
+				});
+
+				observer.observe(target, config);
+				//observer.disconnect();
+			}
+
 		}
 	};
 }]);
-
 
 module.directive( 'spy', [ function() {
 	return {
@@ -124,7 +163,7 @@ module.directive( 'spy', [ function() {
 		},
 		template: function( element, attrs ) {
 			var tag = element[0].nodeName;
-			return '<'+tag+' href="##{{spy}}" ng-transclude ng-class="{active: enabled}"></'+tag+'>';
+			return '<'+tag+' href="##{{spy}}" data-ng-transclude data-ng-class="{active: enabled}"></'+tag+'>';
 		},
 		replace: true,
 		transclude: true,
