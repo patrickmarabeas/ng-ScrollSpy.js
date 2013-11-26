@@ -19,7 +19,7 @@ module.service( 'spyService', function() {
 	};
 });
 
-module.directive ( 'scrollspy', [ '$rootScope', '$interval', '$window', '$document', 'spyService', function( $rootScope, $interval, $window, $document, spyService ) {
+module.directive ( 'scrollspy', [ '$interval', 'spyService', function( $interval, spyService ) {
 	return {
 		restrict: 'A',
 		controller: [ '$scope', function( $scope ) {
@@ -32,7 +32,7 @@ module.directive ( 'scrollspy', [ '$rootScope', '$interval', '$window', '$docume
 					return element[0].innerHeight;
 				}
 				else {
-					return $window.innerHeight;
+					return window.innerHeight;
 				}
 			};
 
@@ -111,44 +111,39 @@ module.directive ( 'scrollspy', [ '$rootScope', '$interval', '$window', '$docume
 				determiner();
 			});
 
-//			$rootScope.$watch(function() {
-//
-//			});
-//
-//			$interval(function() {
-//
-//			}, 2000);
+			var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+			if( MutationObserver ) {
 
+				for ( var i = 0; i < spyService.spies.length; i++ ) {
+					var spy = spyService.spies[i].scope.spy;
+					var target = document.getElementById(spy);
 
-			for ( var i = 0; i < spyService.spies.length; i++ ) {
-
-				var spy = spyService.spies[i].scope.spy;
-
-//				angular.element( document.querySelector( '#' + spy ) ).bind( 'DOMSubtreeModified', function( e ) {
-//					console.warn("change!", e);
-//
-//					angular.element( document ).ready( function() {
-//						setup();
-//						determiner();
-//					});
-//
-//				});
-
-				var target = document.getElementById(spy);
-				var config = { attributes: true, childList: true, characterData: true };
-				var observer = new MutationObserver(function(mutations) {
-					mutations.forEach(function(mutation) {
-						console.warn("change!");
+					var config = {
+						attributes: true,
+						childList: true,
+						characterData: true,
+						subtree: true
+					};
+					var observer = new MutationObserver(function(mutations) {
+						mutations.forEach(function(mutation) {
+							//console.warn('mutation observation');
+							setup();
+							determiner();
+						});
+					}).observe(target, config);
+				}
+			}
+			else {
+				//console.warn('no mutation observers here');
+				$interval(function() {
+					angular.element( document ).ready( function() {
+						//console.log('refreshing');
 						setup();
 						determiner();
-
 					});
-				});
+				}, 2000);
 
-				observer.observe(target, config);
-				//observer.disconnect();
 			}
-
 		}
 	};
 }]);
