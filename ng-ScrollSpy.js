@@ -158,7 +158,7 @@ module.directive( 'spy', [ function() {
 		},
 		template: function( element, attrs ) {
 			var tag = element[0].nodeName;
-			return '<'+tag+' href="##{{spy}}" data-ng-transclude data-ng-class="{active: enabled}"></'+tag+'>';
+			return '<'+tag+' data-ng-transclude data-ng-class="{active: enabled}"></'+tag+'>';
 		},
 		replace: true,
 		transclude: true,
