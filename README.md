@@ -2,6 +2,8 @@
 
 ### ng-ScrollSpy is an AngularJS module for navigation highlighting.
 
+Grab it with Bower: `bower install ng-ScrollSpy.js`
+
 Include it in your AngularJS application
 
 	var myApp = angular.module( 'myApp', [ 'ngScrollSpy' ] );
