@@ -1,4 +1,4 @@
-/* ng-ScrollSpy.js v1.1.0
+/* ng-ScrollSpy.js v1.1.1
  * https://github.com/patrickmarabeas/ng-ScrollSpy.js
  *
  * Copyright 2013, Patrick Marabeas http://pulse-dev.com
@@ -8,18 +8,18 @@
  * Date: 24/11/2013
  */
 
-var module = angular.module( 'ngScrollSpy', [] );
+angular.module( 'ngScrollSpy', [] )
 
-module.service( 'spyService', function() {
+.service( 'spyService', function() {
 	return {
 		spies: [],
 		addSpy: function( spy ) {
 			this.spies.push( spy );
 		}
 	};
-});
+})
 
-module.directive ( 'scrollspy', [ '$interval', 'spyService', function( $interval, spyService ) {
+.directive ( 'scrollspy', [ '$interval', 'spyService', function( $interval, spyService ) {
 	return {
 		restrict: 'A',
 		controller: [ '$scope', function( $scope ) {
@@ -146,9 +146,9 @@ module.directive ( 'scrollspy', [ '$interval', 'spyService', function( $interval
 			}
 		}
 	};
-}]);
+}])
 
-module.directive( 'spy', [ function() {
+.directive( 'spy', [ function() {
 	return {
 		restrict: 'A',
 		require: [ '?^scrollspy' ],
