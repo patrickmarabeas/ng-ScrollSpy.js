@@ -8,16 +8,12 @@ Include it in your AngularJS application
 
 	var myApp = angular.module( 'myApp', [ 'ngScrollSpy' ] );
 
-Apply it to your app
+The following line is your navigation item element which will be given an `active` class when the specified ID is spied upon. It is element type unspecific.
 
-	<body data-scrollspy>...</body>
-
-The attribute `data-scrollspy-offset` can also be used. Default is 0. Must be used on the element with the scrollspy directive. The following line is your navigation item element which will be given an `active` class when the specified ID is spied upon. It is element type unspecific.
-
-	<span data-spy="myID">myID</span>
+	<span data-scrollspy-listen="myID">myID</span>
 
 This is the element you wish to spy on.
 
-	<section id="myID"></section>
+	<section id="myID" data-scrollspy-broadcast></section>
 
 NOTE: this AngularJS module is simply a scrollspy, anchor linking / smooth scrolling is another modules concern.
