@@ -21,14 +21,16 @@
 	</header>
 
 	<nav>
-		<span class="item" data-spy="code">ng-ScrollSpy.js</span>
-		<span class="item" data-spy="hongkong">Hong Kong</span>
-		<span class="item" data-spy="newyork">New York</span>
-		<span class="item" data-spy="london">London</span>
-		<span class="item" data-spy="sydney">Sydney</span>
+		<span class="item" data-scrollspy-listen="code">ng-ScrollSpy.js</span>
+		<span class="item" data-scrollspy-listen="hongkong">Hong Kong</span>
+		<span class="item" data-scrollspy-listen="london">not in order</span>
+		<span class="item" data-scrollspy-listen="newyork">New York</span>
+		<span class="item" data-scrollspy-listen="london">London</span>
+		<span class="item" data-scrollspy-listen="sydney">Sydney</span>
+		<span class="item" data-scrollspy-listen="test">test</span>
 	</nav>
 
-	<section id="code">
+	<section id="code" data-scrollspy-broadcast>
 
 		<div class="wrapper">
 
@@ -53,10 +55,11 @@
 		</div>
 
 	</section>
-	<section id="hongkong" data-expand></section>
-	<section id="newyork" data-expand></section>
-	<section id="london" data-expand></section>
-	<section id="sydney" data-expand></section>
+	<section id="hongkong" data-scrollspy-broadcast data-expand></section>
+	<section id="newyork" data-scrollspy-broadcast data-expand></section>
+	<section id="london" data-scrollspy-broadcast data-expand></section>
+	<section id="sydney" data-scrollspy-broadcast data-expand></section>
+	<section id="test" data-scrollspy-broadcast data-expand></section>
 
 </body>
 </html>
