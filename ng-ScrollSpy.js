@@ -1,180 +1,92 @@
-/* ng-ScrollSpy.js v1.1.1
+/* ng-ScrollSpy.js v2.0.0
  * https://github.com/patrickmarabeas/ng-ScrollSpy.js
  *
- * Copyright 2013, Patrick Marabeas http://pulse-dev.com
+ * Copyright 2014, Patrick Marabeas http://pulse-dev.com
  * Released under the MIT license
  * http://opensource.org/licenses/mit-license.php
  *
- * Date: 24/11/2013
+ * Date: 28/02/2014
  */
+
+'use strict';
 
 angular.module( 'ngScrollSpy', [] )
 
-.service( 'spyService', function() {
-	return {
-		spies: [],
-		addSpy: function( spy ) {
-			this.spies.push( spy );
+	.directive( 'scrollspyBroadcast', [ '$rootScope', function( $rootScope ) {
+		return {
+			restrict: 'A',
+			scope: {},
+			link: function( scope, element, attrs ) {
+
+				scope.activate = function() {
+
+					scope.documentHeight = Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight );
+//					distance down the page the top of the window is currently at
+					scope.userScrolledTop = ( window.pageYOffset !== undefined ) ? window.pageYOffset : ( document.documentElement || document.body.parentNode || document.body ).scrollTop;
+//					distance down the page the bottom of the window is currently at
+					scope.userScrolledBottom = scope.userScrolledTop + window.innerHeight;
+
+					scope.elementOffsetTop = element[0].offsetTop;
+					scope.elementOffsetBottom = scope.elementOffsetTop + Math.max( element[0].scrollHeight, element[0].offsetHeight );
+
+					scope.triggerOffset = 150;
+
+					if( ( scope.elementOffsetTop - scope.triggerOffset ) < ( scope.documentHeight - window.innerHeight ) ) {
+						if( scope.elementOffsetTop <= ( scope.userScrolledTop + scope.triggerOffset ) ) {
+							$rootScope.$broadcast( 'spied', {
+								'activeSpy': attrs.id
+							});
+						}
+					} else {
+						if( scope.userScrolledBottom > ( scope.elementOffsetBottom - scope.triggerOffset ) ) {
+							$rootScope.$broadcast( 'spied', {
+								'activeSpy': attrs.id
+							});
+						}
+					}
+
+				};
+
+				angular.element( document ).ready( function() {
+					scope.activate();
+				});
+
+				angular.element( window ).bind( 'scroll', function() {
+					scope.activate();
+				});
+
+			}
 		}
-	};
-})
+	}])
 
-.directive ( 'scrollspy', [ '$interval', 'spyService', function( $interval, spyService ) {
-	return {
-		restrict: 'A',
-		controller: [ '$scope', function( $scope ) {
-			this.spyService = spyService;
-		}],
-		link: function( scope, element, attrs ) {
 
-			var scrollSpyVisibleHeight = function() {
-				if( element[0].innerHeight ) {
-					return element[0].innerHeight;
-				}
-				else {
-					return window.innerHeight;
-				}
-			};
+	.directive( 'scrollspyListen', [ '$rootScope', function( $rootScope ) {
+		return {
+			restrict: 'A',
+			scope: {
+				scrollspyListen: '@',
+				enabled: '@'
+			},
+			replace: true,
+			transclude: true,
+			template: function( element, attrs ) {
+				var tag = element[0].nodeName;
+				return '<'+tag+' data-ng-transclude data-ng-class="{active: enabled}"></'+tag+'>';
+			},
+			link: function( scope, element, attrs ) {
 
-			var setup = function() {
+				$rootScope.$on('spied', function(event, args){
 
-				scope.testHeight = Math.max( element[0].scrollHeight, element[0].offsetHeight );
-				var scrollSpyTotalHeight = Math.max( element[0].scrollHeight, element[0].offsetHeight );
-				//var offset = scrollSpyVisibleHeight() / 4;
-				var offset = attrs.scrollspyOffset || 0;
-				var maxScrollTop = scrollSpyTotalHeight - scrollSpyVisibleHeight();
+					scope.enabled = false;
 
-				for ( var i = 0; i < spyService.spies.length; i++ ) {
-
-					var spy = spyService.spies[i];
-					var spyElement = document.getElementById( spy.scope.spy );
-					spy.range = {
-						min: spyElement.offsetTop - offset,
-						max: spyElement.offsetTop + spyElement.offsetHeight
-					};
-
-					if( spy.range.min < maxScrollTop ) {
-						spy.trigger = 'min';
-					}
-					else {
-						spy.trigger = 'max';
+					if( scope.scrollspyListen === args.activeSpy ) {
+						scope.enabled = true;
 					}
 
-
-				}
-			};
-
-			var determiner = function() {
-
-				var current = null;
-				var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
-				var scrollBottom = ((window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop) + scrollSpyVisibleHeight();
-
-				for ( var i = 0; i < spyService.spies.length; i++ ) {
-					var spy = spyService.spies[i];
-
-					if( spy.trigger === 'min' && (spy.range.min - scrollTop) <= 0 ) {
-						current = spy.scope.spy;
-					}
-					else if( spy.trigger === 'max' && (spy.range.max - scrollBottom) <= 0 ) {
-						current = spy.scope.spy;
-					}
-
-				}
-
-				scope.$apply( function () {
-					scope.activeSpy = current;
+					if( !scope.$$phase ) scope.$digest();
 
 				});
 
-			};
-
-			scope.$watch('activeSpy', function( newVal, oldVal ){
-				if( newVal != oldVal ) {
-					scope.$broadcast( 'spied', {
-						'activeSpy': scope.activeSpy
-					});
-				}
-			});
-
-			angular.element( document ).ready( function() {
-				setup();
-				determiner();
-			});
-
-			angular.element( window ).bind("resize", function() {
-				setup();
-				determiner();
-			});
-
-			angular.element( window ).bind("scroll", function() {
-				determiner();
-			});
-
-			var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
-			if( MutationObserver ) {
-
-				for ( var i = 0; i < spyService.spies.length; i++ ) {
-					var spy = spyService.spies[i].scope.spy;
-					var target = document.getElementById(spy);
-
-					var config = {
-						attributes: true,
-						childList: true,
-						characterData: true,
-						subtree: true
-					};
-					var observer = new MutationObserver(function(mutations) {
-						mutations.forEach(function(mutation) {
-							//console.warn('mutation observation');
-							setup();
-							determiner();
-						});
-					}).observe(target, config);
-				}
-			}
-			else {
-				//console.warn('no mutation observers here');
-				$interval(function() {
-					angular.element( document ).ready( function() {
-						//console.log('refreshing');
-						setup();
-						determiner();
-					});
-				}, 2000);
-
 			}
 		}
-	};
-}])
-
-.directive( 'spy', [ function() {
-	return {
-		restrict: 'A',
-		require: [ '?^scrollspy' ],
-		scope: {
-			spy: '@',
-			enabled: '@'
-		},
-		template: function( element, attrs ) {
-			var tag = element[0].nodeName;
-			return '<'+tag+' data-ng-transclude data-ng-class="{active: enabled}"></'+tag+'>';
-		},
-		replace: true,
-		transclude: true,
-		link: function( scope, element, attrs, ctrls ){
-
-			ctrls[0].spyService.addSpy({
-				scope: scope
-			});
-
-			scope.$on('spied', function(event, args){
-				scope.enabled = false;
-				if( scope.spy === args.activeSpy ) {
-					scope.enabled = true;
-				}
-			});
-
-		}
-	};
-}]);
+	}]);
