@@ -1,6 +1,14 @@
 
 var module = angular.module( 'demo', ['ngScrollSpy'] );
 
+module.config(['scrollspyConfigProvider', function(ScrollspyConfigProvider) {
+  ScrollspyConfigProvider.config = {
+    offset: 250,
+    throttle: true,
+    delay: 100
+  };
+}]);
+
 /******************** DEMO SPECIFIC DIRECTIVES **********************/
 
 

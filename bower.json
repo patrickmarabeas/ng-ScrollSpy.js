@@ -1,6 +1,6 @@
 {
 	"name": "ng-ScrollSpy.js",
-	"version": "2.0.0",
+	"version": "3.0.0",
 	"main": [
 		"ng-ScrollSpy.js"
 	],
@@ -9,8 +9,17 @@
 		"javascript",
 		"scrollspy"
 	],
-	"ignore": [
-		"**/.*",
-		"styles"
-	]
+  "ignore": [
+    "demo",
+    "test",
+    ".bowerrc",
+    ".gitignore",
+    "bower.json",
+    "Gruntfile.js",
+    "index.html",
+    "package.json"
+  ],
+  "dependencies": {
+    "angular": "1.2.16"
+  }
 }

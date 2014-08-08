@@ -1,0 +1,22 @@
+{
+  "name": "ng-ScrollSpy.js",
+  "version": "3.0.0",
+  "description": "ScrollSpy module for Angular",
+  "homepage": "http://patrickmarabeas.github.io/ng-ScrollSpy.js/",
+  "bugs": "https://github.com/patrickmarabeas/ng-ScrollSpy.js/issues",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/patrickmarabeas/ng-ScrollSpy.js.git"
+  },
+  "license": "MIT",
+  "main": "build/.js",
+  "devDependencies": {
+    "grunt": "0.4.5",
+    "grunt-cli": "0.1.13",
+    "grunt-contrib-watch": "0.6.1",
+    "grunt-contrib-less": "0.11.4"
+  },
+  "scripts": {
+    "build": "grunt less"
+  }
+}

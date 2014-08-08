@@ -1,61 +1,68 @@
 <!DOCTYPE html>
 <html data-ng-app="demo">
 <head>
-    <title>AngularJS ng-ScrollSpy.js</title>
+  <title>AngularJS ng-ScrollSpy.js</title>
 
-    <script type="text/javascript" src="http://code.angularjs.org/1.2.1/angular.min.js"></script>
-	<script type="text/javascript" src="demo.js"></script>
-	<script type="text/javascript" src="ng-ScrollSpy.js"></script>
+  <script type="text/javascript" src="lib/angular/angular.min.js"></script>
+  <script type="text/javascript" src="demo/scripts/demo.js"></script>
+  <script type="text/javascript" src="src/ng-ScrollSpy.js"></script>
 
-	<link rel="stylesheet/less" type="text/css" href="styles/main.less" />
-	<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.5.0/less.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="demo/styles/main.css"/>
 
 </head>
-<body data-scrollspy data-scrollspy-offset="200">
+<body>
 
-	<header id="top">
-		<a href="https://github.com/patrickmarabeas/ng-ScrollSpy.js">View it on GitHub</a>
-		<a href="https://github.com/patrickmarabeas/ng-ScrollSpy.js/zipball/master">Download ZIP</a>
-		<a href="https://github.com/patrickmarabeas/ng-ScrollSpy.js/tarball/master">Download TAR</a>
-		<a href="https://github.com/patrickmarabeas">@patrickmarabeas</a>
-	</header>
+<header id="top">
+  <a href="https://github.com/patrickmarabeas/ng-ScrollSpy.js">View it on GitHub</a>
+  <a href="https://github.com/patrickmarabeas/ng-ScrollSpy.js/zipball/master">Download ZIP</a>
+  <a href="https://github.com/patrickmarabeas/ng-ScrollSpy.js/tarball/master">Download TAR</a>
+  <a href="https://github.com/patrickmarabeas">@patrickmarabeas</a>
+</header>
 
-	<nav>
-		<span class="item" data-scrollspy-listen="code">ng-ScrollSpy.js</span>
-		<span class="item" data-scrollspy-listen="hongkong">Hong Kong</span>
-		<span class="item" data-scrollspy-listen="london">not in order</span>
-		<span class="item" data-scrollspy-listen="newyork">New York</span>
-		<span class="item" data-scrollspy-listen="london">London</span>
-		<span class="item" data-scrollspy-listen="sydney">Sydney</span>
-		<span class="item" data-scrollspy-listen="test">test</span>
-	</nav>
+<nav>
+  <span class="item" data-scrollspy-listen="code">ng-ScrollSpy.js</span>
+  <span class="item" data-scrollspy-listen="hongkong">Hong Kong</span>
+  <span class="item" data-scrollspy-listen="newyork">New York</span>
+  <span class="item" data-scrollspy-listen="london">London</span>
+  <span class="item" data-scrollspy-listen="sydney">Sydney</span>
+</nav>
 
-	<section id="code" data-scrollspy-broadcast>
+<section id="code" data-scrollspy-broadcast>
 
-		<div class="wrapper">
+  <div class="wrapper">
 
-			<p>Include it in your AngularJS application</p>
+    <p>Include it in your AngularJS application</p>
 
-			<code>var myApp = angular.module( 'myApp', [ 'ngScrollSpy' ] );</code>
+    <code>var myApp = angular.module( 'myApp', [ 'ngScrollSpy' ] );</code>
 
-			<p>The following line is your navigation item element which will be given an `active` class when the specified ID is spied upon. It is element type unspecific.</p>
+    <p>The following line is your navigation item element which will be given an `active` class when the specified ID is
+      spied upon. It is element type unspecific.</p>
 
-			<code>&lt;span data-scrollspy-listen="myID"&gt;myID&lt;/span&gt;</code>
+    <code>&lt;span data-scrollspy-listen="myID"&gt;myID&lt;/span&gt;</code>
 
-			<p>This is the element you wish to spy on.</p>
+    <p>This is the element you wish to spy on.</p>
 
-			<code>&lt;section id="myID" data-scrollspy-broadcast&gt;&lt;/section&gt;</code>
+    <code>&lt;section id="myID" data-scrollspy-broadcast&gt;&lt;/section&gt;</code>
 
-			<p>NOTE: this AngularJS module is simply a scrollspy, anchor linking / smooth scrolling is another modules concern.</p>
+    <p>There are some global config options available:</p>
 
-		</div>
+    <code>myApp.config([ 'scrollspyConfigProvider', function( scrollspyConfigProvider ) {</br>
+      &ensp; scrollspyConfigProvider.config = {</br>
+      &ensp;&ensp; offset: 250, <span class="comment">//offset added to element</span></br>
+      &ensp;&ensp; throttle: true, <span class="comment">//whether to limit the scroll event to once every n</span></br>
+      &ensp;&ensp; delay: 100 <span class="comment">//the delay between scroll events</span></br>
+      &ensp; };</br>
+      }]);</code>
 
-	</section>
-	<section id="hongkong" data-scrollspy-broadcast data-expand></section>
-	<section id="newyork" data-scrollspy-broadcast data-expand></section>
-	<section id="london" data-scrollspy-broadcast data-expand></section>
-	<section id="sydney" data-scrollspy-broadcast data-expand></section>
-	<section id="test" data-scrollspy-broadcast data-expand></section>
+    <p>NOTE: this AngularJS module is simply a scrollspy, anchor linking / smooth scrolling is another modules concern.</p>
+
+  </div>
+
+</section>
+<section id="hongkong" data-scrollspy-broadcast data-expand></section>
+<section id="newyork" data-scrollspy-broadcast data-expand></section>
+<section id="london" data-scrollspy-broadcast data-expand></section>
+<section id="sydney" data-scrollspy-broadcast data-expand></section>
 
 </body>
 </html>
