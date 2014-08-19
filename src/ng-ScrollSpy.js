@@ -112,7 +112,10 @@ angular.module('ngScrollSpy', [])
       link: function(scope) {
         scope.$on('spied', function() {
           $timeout(function() {
-            scope.enabled = scope.scrollspyListen === SpyFactory.spies[SpyFactory.spies.length - 1];
+            var spies = scope.scrollspyListen.split("|");
+              for(var i = 0; i < spies.length; i++)
+                if(scope.enabled = spies[i] === SpyFactory.spies[SpyFactory.spies.length - 1])
+                  break;
           });
         });
       }
