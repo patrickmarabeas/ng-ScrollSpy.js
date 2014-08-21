@@ -92,6 +92,7 @@ angular.module('ngScrollSpy', [])
           : angular.element(window).bind('scroll', function() { scope.checkActive() });
 
         angular.element( document ).ready( function() { scope.checkActive() });
+        angular.element(window).bind('resize', function () { scope.checkActive() });
       }
     }
   }])
