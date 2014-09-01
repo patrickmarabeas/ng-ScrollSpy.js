@@ -65,20 +65,20 @@ angular.module('ngScrollSpy', [])
       scope: true,
       link: function(scope, element, attrs) {
         angular.extend(config, scrollspyConfig.config);
-
+        var offset = parseInt(attrs.scrollspyOffset || config.offset);
         scope.checkActive = function() {
           scope.elementTop = element[0].offsetTop;
           scope.elementBottom = scope.elementTop + Math.max(element[0].scrollHeight, element[0].offsetHeight);
 
-          if((scope.elementTop - config.offset) < (PositionFactory.position.documentHeight - window.innerHeight)) {
-            if(scope.elementTop <= (PositionFactory.position.windowTop + config.offset)) {
+          if((scope.elementTop - offset) < (PositionFactory.position.documentHeight - window.innerHeight)) {
+            if(scope.elementTop <= (PositionFactory.position.windowTop + offset)) {
               SpyFactory.addSpy(attrs.id);
             } else {
               SpyFactory.removeSpy(attrs.id);
             }
 
           } else {
-            if(PositionFactory.position.windowBottom > (scope.elementBottom - config.offset)) {
+            if(PositionFactory.position.windowBottom > (scope.elementBottom - offset)) {
               SpyFactory.addSpy(attrs.id);
             } else {
               SpyFactory.removeSpy(attrs.id);
@@ -91,7 +91,7 @@ angular.module('ngScrollSpy', [])
           ? angular.element(window).bind('scroll', throttle(function() { scope.checkActive() }, config.delay))
           : angular.element(window).bind('scroll', function() { scope.checkActive() });
 
-        angular.element( document ).ready( function() { scope.checkActive() });
+        angular.element(document).ready( function() { scope.checkActive() });
         angular.element(window).bind('resize', function () { scope.checkActive() });
       }
     }
@@ -114,9 +114,9 @@ angular.module('ngScrollSpy', [])
         scope.$on('spied', function() {
           $timeout(function() {
             var spies = scope.scrollspyListen.split("|");
-              for(var i = 0; i < spies.length; i++)
-                if(scope.enabled = spies[i] === SpyFactory.spies[SpyFactory.spies.length - 1])
-                  break;
+            for(var i = 0; i < spies.length; i++)
+              if(scope.enabled = spies[i] === SpyFactory.spies[SpyFactory.spies.length - 1])
+                break;
           });
         });
       }
