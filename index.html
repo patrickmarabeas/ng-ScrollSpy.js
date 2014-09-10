@@ -31,18 +31,23 @@
 
   <div class="wrapper">
 
+    <p>Grab it with Bower:</p>
+
+    <code>bower install ng-ScrollSpy.js</code>
+
     <p>Include it in your AngularJS application</p>
 
     <code>var myApp = angular.module( 'myApp', [ 'ngScrollSpy' ] );</code>
 
     <p>The following line is your navigation item element which will be given an `active` class when the specified ID is
-      spied upon. It is element type unspecific.</p>
+      spied upon. It is element type unspecific. You can listen for multiple elements with pipe separation.</p>
 
     <code>&lt;span data-scrollspy-listen="myID"&gt;myID&lt;/span&gt;</code>
+    <code>&lt;span data-scrollspy-listen="myID|another"&gt;multiple&lt;/span&gt;</code>
 
-    <p>This is the element you wish to spy on.</p>
+    <p>This is the element you wish to spy on. Offset can be set specifically on elements as well.</p>
 
-    <code>&lt;section id="myID" data-scrollspy-broadcast&gt;&lt;/section&gt;</code>
+    <code>&lt;section id="myID" data-scrollspy-broadcast data-scrollspy-offset="100"&gt;&lt;/section&gt;</code>
 
     <p>There are some global config options available:</p>
 
