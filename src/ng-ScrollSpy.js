@@ -1,4 +1,4 @@
-/* ng-ScrollSpy.js v3.1.0
+/* ng-ScrollSpy.js v3.2.0
  * https://github.com/patrickmarabeas/ng-ScrollSpy.js
  *
  * Copyright 2014, Patrick Marabeas http://marabeas.io
@@ -86,9 +86,8 @@
             }
           };
 
-          function throttle(e,t,n){var r,i;return function(){var s=n||this;var o=+(new Date),u=arguments;if(r&&o<r+t){clearTimeout(i);i=setTimeout(function(){r=o;e.apply(s,u)},t)}else{r=o;e.apply(s,u)}}}
-          config.throttle == true
-            ? angular.element(window).bind('scroll', throttle(function() { scope.checkActive() }, config.delay))
+          config.throttle
+            ? angular.element(window).bind('scroll', config.throttle(function() { scope.checkActive() }, config.delay))
             : angular.element(window).bind('scroll', function() { scope.checkActive() });
 
           angular.element(document).ready( function() { scope.checkActive() });
