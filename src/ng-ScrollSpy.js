@@ -1,11 +1,11 @@
-/* ng-ScrollSpy.js v3.2.0
+/* ng-ScrollSpy.js v3.2.1
  * https://github.com/patrickmarabeas/ng-ScrollSpy.js
  *
  * Copyright 2014, Patrick Marabeas http://marabeas.io
  * Released under the MIT license
  * http://opensource.org/licenses/mit-license.php
  *
- * Date: 10/09/2014
+ * Date: 31/01/2015
  */
 
 ;(function(window, document, angular, undefined) {
@@ -14,7 +14,6 @@
 
     .value('config', {
       'offset': 200,
-      'throttle': true,
       'delay': 100
     })
 
