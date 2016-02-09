@@ -1,18 +1,18 @@
-/* ng-ScrollSpy.js v3.2.1
+/* ng-ScrollSpy.js v3.2.2
  * https://github.com/patrickmarabeas/ng-ScrollSpy.js
  *
  * Copyright 2014, Patrick Marabeas http://marabeas.io
  * Released under the MIT license
  * http://opensource.org/licenses/mit-license.php
  *
- * Date: 31/01/2015
+ * Date: 09/02/2016
  */
 
 ;(function(window, document, angular, undefined) {
   'use strict';
   angular.module('ngScrollSpy', [])
 
-    .value('config', {
+    .value('scrollSpyDefaultConfig', {
       'offset': 200,
       'delay': 100
     })
@@ -58,42 +58,49 @@
       }
     }])
 
-    .directive('scrollspyBroadcast', ['config', 'scrollspyConfig', 'SpyFactory', 'PositionFactory', function(config, scrollspyConfig, SpyFactory, PositionFactory) {
-      return {
-        restrict: 'A',
-        scope: true,
-        link: function(scope, element, attrs) {
-          angular.extend(config, scrollspyConfig.config);
-          var offset = parseInt(attrs.scrollspyOffset || config.offset);
-          scope.checkActive = function() {
-            scope.elementTop = element[0].offsetTop;
-            scope.elementBottom = scope.elementTop + Math.max(element[0].scrollHeight, element[0].offsetHeight);
+    .directive('scrollspyBroadcast', [
+      'scrollSpyDefaultConfig',
+      'scrollspyConfig',
+      'SpyFactory',
+      'PositionFactory',
 
-            if((scope.elementTop - offset) < (PositionFactory.position.documentHeight - window.innerHeight)) {
-              if(scope.elementTop <= (PositionFactory.position.windowTop + offset)) {
-                SpyFactory.addSpy(attrs.id);
+      function(config, scrollspyConfig, SpyFactory, PositionFactory) {
+        return {
+          restrict: 'A',
+          scope: true,
+          link: function(scope, element, attrs) {
+            angular.extend(config, scrollspyConfig.config);
+            var offset = parseInt(attrs.scrollspyOffset || config.offset);
+            scope.checkActive = function() {
+              scope.elementTop = element[0].offsetTop;
+              scope.elementBottom = scope.elementTop + Math.max(element[0].scrollHeight, element[0].offsetHeight);
+
+              if((scope.elementTop - offset) < (PositionFactory.position.documentHeight - window.innerHeight)) {
+                if(scope.elementTop <= (PositionFactory.position.windowTop + offset)) {
+                  SpyFactory.addSpy(attrs.id);
+                } else {
+                  SpyFactory.removeSpy(attrs.id);
+                }
+
               } else {
-                SpyFactory.removeSpy(attrs.id);
+                if(PositionFactory.position.windowBottom > (scope.elementBottom - offset)) {
+                  SpyFactory.addSpy(attrs.id);
+                } else {
+                  SpyFactory.removeSpy(attrs.id);
+                }
               }
+            };
 
-            } else {
-              if(PositionFactory.position.windowBottom > (scope.elementBottom - offset)) {
-                SpyFactory.addSpy(attrs.id);
-              } else {
-                SpyFactory.removeSpy(attrs.id);
-              }
-            }
-          };
+            config.throttle
+              ? angular.element(window).bind('scroll', config.throttle(function() { scope.checkActive() }, config.delay))
+              : angular.element(window).bind('scroll', function() { scope.checkActive() });
 
-          config.throttle
-            ? angular.element(window).bind('scroll', config.throttle(function() { scope.checkActive() }, config.delay))
-            : angular.element(window).bind('scroll', function() { scope.checkActive() });
-
-          angular.element(document).ready( function() { scope.checkActive() });
-          angular.element(window).bind('resize', function () { scope.checkActive() });
+            angular.element(document).ready( function() { scope.checkActive() });
+            angular.element(window).bind('resize', function () { scope.checkActive() });
+          }
         }
       }
-    }])
+    ])
 
     .directive('scrollspyListen', ['$timeout', 'SpyFactory', function($timeout, SpyFactory) {
       return {
